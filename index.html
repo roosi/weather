@@ -70,7 +70,9 @@ $(document).ready(function(){
 				utils.getDefaultLocale(),
 				function(result){	 
 					$("#temperature").html(result.main.temp + " °C");
-					$("#weather").html(result.weather[0].description);
+					var weather = document.getElementById("weather");
+					showImage("http://openweathermap.org/img/w/" + result.weather[0].icon, 
+						50, 50, result.weather[0].main, weather);
 				},
 				function(error){
 					alert("getWeatherByCoords: " + error);
@@ -95,8 +97,6 @@ $(document).ready(function(){
 			alert(error)
 		}
 	);
-
-	$("#locale").html("&#9733;" + utils.getDefaultLocale() + "&#9734;");
 });
 
 function buildForecastList(list) {
@@ -119,6 +119,18 @@ function buildForecastList(list) {
 	});
 }
 
+function showImage(src, width, height, alt, dest) {
+    var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+    img.alt = alt;
+    img.setAttribute("class", "image");
+
+    // This next line will just add it to the <body> tag
+    dest.appendChild(img);
+}
+
 </script>
 </head>
 <body onload="initialize()">
@@ -126,26 +138,14 @@ function buildForecastList(list) {
 		<section class="map-main">
 			<div id="map-canvas"></div>
 			<div id="panel">
-				<p id="temperature"></p>
-				<p id="weather"></p>
-				<p id="location"></p>
-				<p id="locale"></p>
+				<p id="temperature" class="temperature"></p>
+				<div id="weather"></div>
+				<p id="location" class="location"></p>
 			</div>
 		</section>
 		<section id="forecast" class="forecast">
 		</section>
 	</div>
-	<!--
-	<footer class="footer">
-		<div>
-  		<nav class="nav" role="navigation">
-   		<ul class="footer-nav">
-    		<li><a href="#">5 Day Forecast</a></li>
-    		<li><a href="#">My Locations</a></li>
-   		</ul>
-  		</nav>
-		</div>
-	</footer><!--end .footer-->
 </body>
 </html>
 
