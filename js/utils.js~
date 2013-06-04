@@ -1,0 +1,5 @@
+var utils = {
+	getDefaultLocale: function() {
+		return "en";
+	}
+}
