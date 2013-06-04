@@ -105,16 +105,18 @@ function buildForecastList(list) {
 	forecast.appendChild(ul);
 	var json = { items: ["item 1", "item 2", "item 3"] };
 	$(list).each(function(index, item) {
-		var date = new Date(item.dt * 1000);
+		var date = new Date(item.dt * 1000).toLocaleDateString();
 		var li = document.createElement("li");
 		li.setAttribute("class", "forecast-list-item");
-		li.innerHTML = "<p>" + date + "</p>" +
-			"<p>Day " + item.temp.day + " °C</p>" +
-			"<p>Night " + item.temp.night + " °C</p>" +
-			"<p>" + item.weather[0].description + "</p>" +
-			//http://openweathermap.org/img/w/10d.png
-			"<img src=http://openweathermap.org/img/w/" + item.weather[0].icon + " alt=" + item.weather[0].main + ">" +
-			"</br>";
+		li.innerHTML = 
+			//http://openweathermap.org/img/w/<icon>
+			"<p>" +
+			"<p><img class='forecast-image' src=http://openweathermap.org/img/w/" + item.weather[0].icon + " alt=" + item.weather[0].main + "></p>" +
+			"<p class='forecast-date'>" + date + "</p>" +		
+			"<p class='forecast-temperature-day'>Day " + item.temp.day + " °C</p>" +
+			"<p class='forecast-temperature-night'>Night " + item.temp.night + " °C</p>" +
+			"<p class='forecast-description'>" + item.weather[0].description + "</p>" +
+			"</p>"
   	ul.appendChild(li);
 	});
 }
@@ -127,7 +129,6 @@ function showImage(src, width, height, alt, dest) {
     img.alt = alt;
     img.setAttribute("class", "image");
 
-    // This next line will just add it to the <body> tag
     dest.appendChild(img);
 }
 

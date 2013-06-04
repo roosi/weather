@@ -15,6 +15,10 @@ legend {
 }
 /************End Reset**************/
 
+p {
+	padding: 0.2em;
+}
+
 #map-canvas {
 	position: absolute;
 	width: 100%;
@@ -41,15 +45,43 @@ legend {
 	padding: 1em;
 }
 
+.forecast-list-item {
+	padding: 0.5em;
+	width: 100%;
+}
+
+.forecast-image {
+	float: left;
+	width: 4em;
+	height: 4em;	
+}
+
+.forecast-date {
+	margin-left: 5em;
+}
+
+.forecast-temperature-day {
+	margin-left: 5em;
+	font-weight: bold;	
+}
+
+.forecast-temperature-night {
+	margin-left: 5em;	
+}
+
+.forecast-description {
+	margin-left: 5em;
+}
+
 .image {
 	width: 5em;
 	height: 5em;	
-	}
+}
 	
 .temperature {
 	font-size: 2em;
 }
 
 .location {
-	font-size: 1em;
+	font-size: 0.8em;
 }
