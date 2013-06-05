@@ -45,9 +45,14 @@ Service.prototype.getDailyForecastByCoords = function(lat, lon, locale, onSucces
 
 Service.prototype.getMyLocation = function(onSuccess, onError) {
 	if(navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(function(position) { 
+		navigator.geolocation.getCurrentPosition(
+		function(position) { 
 			onSuccess(position);
-		});
+		},
+		function(error) {
+			onError(error.message);	
+		},
+		{timeout:20000});
 	}
 	else {
 		onError("Geolocation is not supported by this browser.")

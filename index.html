@@ -23,7 +23,7 @@ function initialize() {
 	geocoder = new google.maps.Geocoder();
  var latlng = new google.maps.LatLng(0, 0);
  var mapOptions = {
- 		zoom: 16,
+ 		zoom: 1,
 		center: latlng,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	}
@@ -35,19 +35,22 @@ function initialize() {
 
 $(document).ready(function(){
 	$("#temperature").html("Loading ...");
+	console.log("getMyLocation");
 
 	service.getMyLocation(
 		function(position){
 			$("#location").html("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
-			
+			map.setZoom(10);
 			// get location name based on coordinates of my location
 			if (geocoder) {			
 				var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				console.log("geocode");
 				geocoder.geocode({"latLng" : latlng }, function (results, status) {
          if (status == google.maps.GeocoderStatus.OK) {
             $("#location").html(results[0].formatted_address);
-            
+            console.log("location: " + results[0].formatted_address);
 											map.setCenter(results[0].geometry.location);
+											map.setZoom(16);
 											map.panBy(0,-	150);
         				var marker = new google.maps.Marker({
             		map: map,
@@ -56,44 +59,53 @@ $(document).ready(function(){
          }
          else {
             alert("Geocoding failed: " + status);
+            console.log("Your location is not available.");
          }
    		});
   		}
   		else {
   			alert("getMyLocation: No geocoder");
+  			console.log("Your browser doesn't support geocoding.");
   		}
 
+			console.log("getWeatherByCoords");
 			// get weather based on coordinates of my location
 			service.getWeatherByCoords(
 				position.coords.latitude, 
 				position.coords.longitude,
 				utils.getDefaultLocale(),
-				function(result){	 
-					$("#temperature").html(result.main.temp + " °C");
+				function(result){
+						 
+console.log("getWeatherByCoords:success");					$("#temperature").html(result.main.temp + " °C");
 					var weather = document.getElementById("weather");
 					showImage("http://openweathermap.org/img/w/" + result.weather[0].icon, 
 						50, 50, result.weather[0].main, weather);
 				},
 				function(error){
-					alert("getWeatherByCoords: " + error);
+					console.log("getWeatherByCoords:error " + error);
+					alert("Current weather is not available.");
 				}
 			);	
 			
+			console.log("getDailyForecastByCoords");
 			// get forecast based on coordinates of my location
 			service.getDailyForecastByCoords(
 				position.coords.latitude, 
 				position.coords.longitude,
 				utils.getDefaultLocale(),
-				function(result){	 
+				function(result){
+					console.log("getDailyForecastByCoords:success");	 
 					buildForecastList(result.list);
 				},
 				function(error){
-					alert("getDailyForecastByCoords: " + error);
+					console.log("getDailyForecastByCoords: error " + error);
+					alert("Daily forecast is not available.");
 				}
 			);	
 
 		},
 		function(error){
+			$("#temperature").html("Refresh to try again");
 			alert(error)
 		}
 	);
