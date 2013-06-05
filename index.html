@@ -115,16 +115,38 @@ function buildForecastList(list) {
 	var forecast = document.getElementById("forecast");
 	var ul = document.createElement("ul");
 	forecast.appendChild(ul);
-	var json = { items: ["item 1", "item 2", "item 3"] };
+
+	var today = new Date();
+	var weekday=new Array(7);
+	weekday[0]="Sunday";
+	weekday[1]="Monday";
+	weekday[2]="Tuesday";
+	weekday[3]="Wednesday";
+	weekday[4]="Thursday";
+	weekday[5]="Friday";
+	weekday[6]="Saturday";
+
 	$(list).each(function(index, item) {
-		var date = new Date(item.dt * 1000).toLocaleDateString();
+		var date = new Date(item.dt * 1000);
+		var dateString = date.toLocaleDateString();
 		var li = document.createElement("li");
+		
+		if (date.getDate() == today.getDate()) {
+		 dateString = "Today";
+		}
+		else if (date.getDate() == today.getDate() + 1){
+			dateString = "Tomorrow";		
+		}
+		else {
+			dateString = weekday[date.getDay()];
+		}
+		
 		li.setAttribute("class", "forecast-list-item");
 		li.innerHTML = 
 			//http://openweathermap.org/img/w/<icon>
 			"<p>" +
 			"<p><img class='forecast-image' src=http://openweathermap.org/img/w/" + item.weather[0].icon + " alt=" + item.weather[0].main + "></p>" +
-			"<p class='forecast-date'>" + date + "</p>" +		
+			"<p class='forecast-date'>" + dateString + "</p>" +		
 			"<p class='forecast-temperature-day'>Day " + item.temp.day + " °C</p>" +
 			"<p class='forecast-temperature-night'>Night " + item.temp.night + " °C</p>" +
 			"<p class='forecast-description'>" + item.weather[0].description + "</p>" +
