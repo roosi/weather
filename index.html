@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>My Weather</title>
 <link rel="stylesheet" type="text/css" href="css/style.css" media="screen, handheld" />
-<link rel="stylesheet" type="text/css" href="css/enhanced.css" media="screen  and (min-width: 40.5em)" />
+<link rel="stylesheet" type="text/css" href="css/enhanced.css" media="screen  and (min-width: 640px)" />
 <!--[if (lt IE 9)&(!IEMobile)]>
 <link rel="stylesheet" type="text/css" href="css/enhanced.css" />
 <![endif]-->
@@ -223,6 +223,7 @@ function getWeather(latitude, longitude) {
 
 function getForecast(latitude, longitude) {
 			console.log("getDailyForecastByCoords");
+			var forecastButton = document.getElementById("forecast-button");
 			// get forecast based on coordinates of my location
 			service.getDailyForecastByCoords(
 				latitude, 
@@ -231,10 +232,16 @@ function getForecast(latitude, longitude) {
 				function(result){
 					console.log("getDailyForecastByCoords:success");	 
 					buildForecastList(result.list);
+					if (utils.checkMobile()) {
+						forecastButton.style.visibility = "visible";
+					}
 				},
 				function(error){
 					console.log("getDailyForecastByCoords: error " + error);
 					clearForecastList();
+					if (utils.checkMobile()) {
+						forecastButton.style.visibility = "hidden";
+					}
 					alert("Daily forecast is not available.");					
 				}
 			);	
