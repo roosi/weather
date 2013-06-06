@@ -39,6 +39,10 @@ p {
  text-align: center;
 }
 
+#forecast-button {
+	visibility: visible;	
+}
+
 #search {
 	position: absolute;
 	bottom: 1em;	
