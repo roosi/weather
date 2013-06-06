@@ -31,6 +31,10 @@ function initialize() {
 
 	map = new google.maps.Map(mapdiv, mapOptions);
 	map.setTilt(45);
+	
+	google.maps.event.addListener(map, 'click', function(event) {
+    locateByCoords(event.latLng);
+	});
 }
 
 $(document).ready(function(){
@@ -79,9 +83,14 @@ $(document).ready(function(){
 });
 
 function locate() {
-		$("#temperature").html("Loading ...");
-		console.log("locate");
+		console.log("locateByAddress");
   var address = document.getElementById("address").value;
+  locateByAddress(address);
+}
+
+function locateByAddress(address) {
+		$("#temperature").html("Loading ...");
+		console.log("locateByAddress");
   
   geocoder.geocode( { "address": address}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
@@ -95,14 +104,44 @@ function locate() {
     		map: map,
 					position: location
 				});
-											
-				//TODO clear panel and list
+
 				getWeather(location.lat(), location.lng());
 				getForecast(location.lat(), location.lng());
 			} else {
 				alert("Location is not available.");
 			}
   });
+}
+
+function locateByCoords(latlng) {
+	$("#temperature").html("Loading ...");
+	console.log("locateByCoords");
+  
+	geocoder.geocode({"latLng" : latlng }, function (results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+ 			$("#location").html(results[0].formatted_address);
+  		console.log("location: " + results[0].formatted_address);
+  		var location = results[0].geometry.location;
+			map.setCenter(location);
+			map.setZoom(10);
+			map.panBy(0,-	150);
+  		var marker = new google.maps.Marker({
+  			map: map,
+				position: location
+			});
+			getWeather(location.lat(), location.lng());
+			getForecast(location.lat(), location.lng());
+  }
+  else {
+			alert("Geocoding failed: " + status);
+			console.log("Your location is not available.");
+ 		}
+	});
+}
+
+function clearForecastList() {
+	var forecastList = document.getElementById("forecast-list");
+	forecastList.innerHTML = "";
 }
 
 function buildForecastList(list) {
@@ -195,7 +234,8 @@ function getForecast(latitude, longitude) {
 				},
 				function(error){
 					console.log("getDailyForecastByCoords: error " + error);
-					alert("Daily forecast is not available.");
+					clearForecastList();
+					alert("Daily forecast is not available.");					
 				}
 			);	
 }
@@ -210,7 +250,7 @@ function getForecast(latitude, longitude) {
 				<p id="temperature" class="temperature"></p>
 				<div id="weather"></div>
 				<p id="location" class="location"></p>
-				<input type="button" id="forecast-button" value="5 days forecast" onclick="location.hash='forecast'"> 
+				<input type="button" id="forecast-button" value="5 day forecast" onclick="location.hash='forecast'"> 
 			</div>
 			<div id="search">
     <input id="address" class="address" type="textbox" placeholder="address">
